@@ -1,5 +1,5 @@
-// route handlers (a route and its controller) called by app.js
-// ====================================
+// main route handlers (a route and its controller) called by app.js
+// =================================================================
 
 // require Express server and it's Router
 const express = require("express");
@@ -12,12 +12,12 @@ const ctrlLocations = require("../controllers/locations");
 const ctrlOthers = require("../controllers/others");
 
 // /location/.. routes and required controllers
-router.get("/", ctrlLocations.homelist);
-router.get("/location", ctrlLocations.locationInfo);
-router.get("/location/review/new", ctrlLocations.addReview);
+router.get("/", ctrlLocations.homelist); // list of all locations
+router.get("/location", ctrlLocations.locationInfo); // individual location details
+router.get("/location/review/new", ctrlLocations.addReview); // review a location
 
 // other routes and required controllers
-router.get("/about", ctrlOthers.about);
+router.get("/about", ctrlOthers.about); // about page
 
 // router.get(..) added to express.Router() and exported
 // so that route is available when this file is required and called
