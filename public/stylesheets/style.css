@@ -1,19 +1,4 @@
-/* Default Express styles */
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-  color: #00b7ff;
-}
-
-/* Default loc8r styles */
-
-/* @import NOT WORKING: use LINK in views/layout.pug head */
-/* @import url("https://fonts.googleapis.com/css?family=Cabin:400,700|Lobster"); */
-/* font-family: 'Lobster', cursive; */
-/* font-family: 'Cabin', sans-serif; */
+@import url("//fonts.googleapis.com/css?family=Lobster|Cabin:400,700");
 
 h1,
 h2,
@@ -21,6 +6,10 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: "Lobster", cursive;
+}
+
+legend {
   font-family: "Lobster", cursive;
 }
 
@@ -105,12 +94,8 @@ a:hover {
   color: #fff;
 }
 
-legend {
-  font-family: "Lobster", cursive;
-}
-
 body {
   font-family: "Cabin", Arial, sans-serif;
-  color: #ffffff;
+  color: #fff;
   background-color: #108a93;
 }
