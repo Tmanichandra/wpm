@@ -10,7 +10,17 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Cabin:400,700|Lobster')
   body
-    block content
+    nav.navbar.fixed-top.navbar-expand-md
+      .container
+      a.navbar-brand(href='/') Loc8r
+      button.navbar-toggler.navbar-toggler-left(type='button', data-toggle='collapse', data-target='#navbarMain')
+        span.navbar-toggler-icon
+      #navbarMain.navbar-collapse.collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item
+        a.nav-link(href='/about/') About
+    .container
+      block content
 
 script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js')
