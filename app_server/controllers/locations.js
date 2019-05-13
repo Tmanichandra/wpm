@@ -17,7 +17,7 @@ const locationInfo = (req, res) => {
 // controller for rendering the "/location/review/new" page view
 const addReview = (req, res) => {
   // render views/index.pug, use "Add review" as the data for #{title}
-  res.render("index", { title: "Add review" });
+  res.render("location-review-form", { title: "Add review" });
 };
 
 module.exports = { 
