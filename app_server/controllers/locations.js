@@ -11,7 +11,7 @@ const homelist = (req, res) => {
 // controller for rendering the "/location" page view
 const locationInfo = (req, res) => {
   // render views/index.pug, use "Location info" as the data for #{title}
-  res.render("index", { title: "Location info" });
+  res.render("location-info", { title: "Location info" });
 };
 
 // controller for rendering the "/location/review/new" page view
