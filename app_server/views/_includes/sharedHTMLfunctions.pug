@@ -1,0 +1,12 @@
+//- create a pug "mixin", aka a function with a (parameter)
+//- a "-" prefixed line indicates raw inline JS code
+//- NOTE: no { code block }, use indents instead
+//- whenever loop condition is true, evaluate indented code below
+mixin outputRating(rating)
+  small &nbsp;
+    //- 1st loop displays # of solid stars equal to rating
+    - for (let i = 1; i <= rating; i++)
+      i.fas.fa-star
+    //- 2nd starts with rating # and fills remainder of 5 with hollow stars 
+    - for (let i = rating; i < 5; i++)
+      i.far.fa-star

@@ -3,6 +3,9 @@
 //- goes inside the layout.pug html wrapper
 extends layout
 
+//- include all pug mixins (functions) in _includes/sharedHTMLfunctions.pug
+include _includes/sharedHTMLfunctions
+
 //- inserts following content into "block content" area of layout.pug view
 block content
   .row.banner
@@ -10,63 +13,62 @@ block content
       //- pageHeader.title data from controllers/locations.js
       //- = signifies content is buffered code (here, a JS object)
       h1= pageHeader.title
-        //- #{} used to insert data, as a template literal variable value
-        //- used here because <small> also contains the &nbsp; space
+        //- h1= `${pageHeader.title}` 
+        //- can also be written as Template Literal, h1= `Welcome to ${pageHeader.title}`
+        //- BUFFERED CODE can build a string, like h1= "Welcome to " + pageHeader.title
+        //- to override HTML tag escaping, use h1!= "Welcome to " + pageHeader.title
+
+        //- #{} used to insert data into a string
+        //- INTERPOLATION, used here because <small> also contains the &nbsp; space
         small &nbsp;#{pageHeader.strapline}
+        //- #{} WILL DISPLAY ANY HTML TAGS IN THE DATA AS TEXT, NOT AS HTML TAGS
+        //- !{} WILL OVERRIDE HTML TAG ESCAPING AND ALLOW HTML TAGS... 
+        //- THIS IS A SECURITY RISK, AND SHOULD ONLY BE DONE WITH TRUSTED DATA SOURCES
 
   .row
     .col-12.col-md-8
-      //- demo hard-coded data BS card
-      .card
-        .card-block
-          h4
-            a(href='/location') Starcups
-            small &nbsp;
-              i.fas.fa-star
-              i.fas.fa-star
-              i.fas.fa-star
-              i.fas.fa-star
-              i.fas.fa-star
-            span.badge.badge-pill.badge-default.float-right 100m
-          p.address 125 High Street, Reading, RG6 1PS
-          .facilities
-            span.badge.badge-warning Hot drinks
-            span.badge.badge-warning Food
-            span.badge.badge-warning Premium wifi
+
+      //- RENDER A Bootstrap .card for each location and it's data
+      //- each [arbitraryKeyName] in [renderDataObjectArrayName]
+      each location in locations
+        //- "each" renders following code for each "location" object in "locations" array
+        .card
+          .card-block
+            h4
+              //- use "location" for "locations" array elements, access .name property
+              a(href='/location')= location.name
+
+              //- call the mixin (function) "outputRating(rating)" for rating stars
+              +outputRating(location.rating)
+
+              //- distance badge on same line as h4 location.name and stars outputRating
+              span.badge.badge-pill.badge-default.float-right= location.distance
+
+            p.address= location.address
+
+            .facilities
+              //- since location.facilities is a sub-array, "each" can loop through it too
+              each facility in location.facilities
+                //- use your made-up key name "facility" to define each item's display
+                span.badge.badge-warning= facility
 
       //- demo hard-coded data BS card
-      .card
-        .card-block
-          h4
-            a(href='/location') Coffee People
-            small &nbsp;
-              i.fas.fa-star
-              i.fas.fa-star
-              i.fas.fa-star
-            span.badge.badge-pill.badge-default.float-right 200m
-          p.address 150 High Street, Reading, RG6 1PS
-          .facilities
-            span.badge.badge-warning Hot drinks
-            span.badge.badge-warning Dirtheads
-            span.badge.badge-warning Trust Punks
-            span.badge.badge-warning Okay wifi
-
-      //- demo hard-coded data BS card
-      .card
-        .card-block
-          h4
-            a(href='/location') Black Books
-            small &nbsp;
-              i.fas.fa-star
-              i.fas.fa-star
-              i.fas.fa-star
-              i.fas.fa-star
-            span.badge.badge-pill.badge-default.float-right 300m
-          p.address 175 High Street, Reading, RG6 1PS
-          .facilities
-            span.badge.badge-warning Surly shopkeep
-            span.badge.badge-warning Weird books
-            span.badge.badge-warning Probably wifi
+      //- .card
+      //-   .card-block
+      //-     h4
+      //-       a(href='/location') Starcups
+      //-       small &nbsp;
+      //-         i.fas.fa-star
+      //-         i.fas.fa-star
+      //-         i.fas.fa-star
+      //-         i.fas.fa-star
+      //-         i.fas.fa-star
+      //-       span.badge.badge-pill.badge-default.float-right 100m
+      //-     p.address 125 High Street, Reading, RG6 1PS
+      //-     .facilities
+      //-       span.badge.badge-warning Hot drinks
+      //-       span.badge.badge-warning Food
+      //-       span.badge.badge-warning Premium wifi
 
     .col-12.col-md-4
-      p.lead Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you're looking for.
+      p.lead= sidebar
