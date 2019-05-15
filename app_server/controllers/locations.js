@@ -4,8 +4,15 @@
 
 // controller for rendering the "/" home page index view (list of locations page)
 const homelist = (req, res) => {
-  // render views/locations-list.pug, use "Home" as the data for #{title}
-  res.render("locations-list", { title: "Locations" });
+  // 1st arg: name of the .pug file to render in /views
+  res.render("locations-list", { 
+    // 2nd arg: JS object containing data to render in the 1st arg page view
+    title: "Loc8r - find a place to work with wifi",
+    pageHeader: {
+      title: 'Loc8r',
+      strapline: 'Find places to work with wifi near you!'
+    } 
+  });
 };
 
 // controller for rendering the "/location" page view

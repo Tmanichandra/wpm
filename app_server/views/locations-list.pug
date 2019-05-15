@@ -7,8 +7,12 @@ extends layout
 block content
   .row.banner
     .col-12
-      h1 Loc8r
-        small &nbsp; find places to work with wifi near you!
+      //- pageHeader.title data from controllers/locations.js
+      //- = signifies content is buffered code (here, a JS object)
+      h1= pageHeader.title
+        //- #{} used to insert data, as a template literal variable value
+        //- used here because <small> also contains the &nbsp; space
+        small &nbsp;#{pageHeader.strapline}
 
   .row
     .col-12.col-md-8
