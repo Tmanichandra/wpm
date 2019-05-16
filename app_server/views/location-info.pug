@@ -70,6 +70,8 @@ block content
                     span.reviewAuthor &nbsp;&nbsp; #{review.author}
                     small.reviewTimestamp &nbsp;&nbsp; #{review.timestamp}
                   .col-12
+                    //- !{} allows execution of HTML tags embedded in the text data
+                    //- .replace uses a RegEx to replace all "\n" in the text with <br/> tags
                     p !{(review.reviewText).replace(/\n/g, '<br/>')}
 
     .col-12.col-lg-3

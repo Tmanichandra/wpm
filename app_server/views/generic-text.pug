@@ -7,8 +7,6 @@ block content
       h1= title
   .row
     .col-12.col-lg-8
-      p
-      | Loc8r was created to help people find places to sit down and get a bit of work done.
-      | <br /> <br />
-      | Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corporis inventore iure accusamus at perferendis dolore. Harum, illum. Nulla suscipit modi recusandae commodi, voluptates iusto magni minus unde qui illo illum?
-      | <br /> <br />
+      //- !{} allows execution of HTML tags embedded in the text data
+      //- .replace uses a RegEx to replace all "\n" in the text with <br/> tags
+      p !{(content).replace(/\n/g, '<br/>')}
