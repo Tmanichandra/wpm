@@ -3,8 +3,12 @@
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
+const favicon = require("serve-favicon");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+// db.js does not export functions, so does NOT need a var name assigned
+// connects Express/Node to Mongoose db models
+require("./app_server/models/db");
 
 // router paths in /routes
 const indexRouter = require("./app_server/routes/index");
