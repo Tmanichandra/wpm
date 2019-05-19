@@ -85,5 +85,8 @@ process.on("SIGTERM", () => {
 });
 
 // ==================================================
+// IMPORT MONGOOSE SCHEMA DEFINITION FILES
 // ==================================================
-// ==================================================
+
+// require the locations.js Mongoose Schema definition file
+require("./locations");
