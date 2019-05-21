@@ -10,7 +10,14 @@ const mongoose = require("mongoose");
 
 // mongodb://username:password@localhost:portnumber/databasename
 // MongoDB URI: username, password, and portnumber are all optional
-const dbURI = "mongodb://localhost/Loc8r";
+let dbURI = "mongodb://localhost/Loc8r";
+
+// conditional detects whether NODE_ENV is Heroku ("production"),
+// because if not, NODE_ENV is either "undefined", "dev", "test", etc.
+if (process.env.NODE_ENV === "production") {
+  // use MONGODB_URI environment variable to protect personal UN, PW, etc.
+  dbURI = process.env.MONGODB_URI;
+}
 
 // create the connection to MongoDB from this file (Mongoose)
 mongoose.connect(dbURI, { useNewUrlParser: true });
