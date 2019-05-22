@@ -1,3 +1,5 @@
+// DELETE THIS FILE? REFERENCE IN app.js COMMENTED OUT
+
 var express = require('express');
 var router = express.Router();
 

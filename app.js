@@ -10,9 +10,14 @@ const logger = require("morgan");
 // connects Express/Node to Mongoose db models
 require("./app_server/models/db");
 
-// router paths in /routes
+// VIEWS router
 const indexRouter = require("./app_server/routes/index");
-const usersRouter = require("./app_server/routes/users");
+
+// BOOK SAYS TO DELETE THIS ROUTE (IF SO, DELETE routes/users.js)
+// const usersRouter = require("./app_server/routes/users");
+
+// API router
+const apiRoutes = require("./app_api/routes/index");
 
 const app = express();
 
@@ -29,9 +34,14 @@ app.use(cookieParser());
 // after Express sends html to browser, html sends it's own request for static css, img, js
 app.use(express.static(path.join(__dirname, "public"))); // path for static assets in /public
 
-// after middleware methods, server request sent to a router in /routes
+// listen for base URL request, handle with VIEWS router (app_server/routes/index.js)
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+
+// BOOK SAYS TO DELETE THIS ROUTE (IF SO, DELETE routes/users.js)
+// app.use("/users", usersRouter);
+
+// listen for all API route calls, handle with API router (app_api/routes/index.js)
+app.use("/api", apiRoutes)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
