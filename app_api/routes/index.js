@@ -2,7 +2,7 @@
 // this file holds all API route definitions, referenced by main app.js file
 
 // all routes handled here are already prefixed with /api
-// so do not include /api in pathnames
+// so do not include /api in route pathnames
 
 // import the Express Router in order to add routes to it
 const express = require("express");
@@ -13,27 +13,32 @@ const ctrlLocations = require("../controllers/locations");
 // import controller for the "reviews" subdocuments
 const ctrlReviews = require("../controllers/reviews");
 
-// locations
+// use compact Express route definitions:
+// list the common pathname in the param of router.route(pathname),
+// then chain on all REST CRUD methods with their controller methods to call
+
+// locations collection routes and chains of REST methods + controllers
 router
   .route("/locations")
-  .get(ctrlLocations.locationsListByDistance)
-  .post(ctrlLocations.locationsCreate);
+  .get(ctrlLocations.locationsListByDistance) // get all locations
+  .post(ctrlLocations.locationsCreate); // create a new location
 
 router
   .route("/locations/:locationid")
-  .get(ctrlLocations.locationsReadOne)
-  .put(ctrlLocations.locationsUpdateOne)
-  .delete(ctrlLocations.locationsDeleteOne);
+  .get(ctrlLocations.locationsReadOne) // get one location
+  .put(ctrlLocations.locationsUpdateOne) // update a location's data
+  .delete(ctrlLocations.locationsDeleteOne); // delete a location
 
-// reviews
+// reviews subdocument routes and chains of REST methods + controllers
 router
   .route("/locations/:locationid/reviews")
-  .post(ctrlReviews.reviewsCreate);
+  .post(ctrlReviews.reviewsCreate); // create a new review
 
 router
   .route("/locations/:locationid/reviews/:reviewid")
-  .get(ctrlReviews.reviewsReadOne)
-  .put(ctrlReviews.reviewsUpdateOne)
-  .delete(ctrlReviews.reviewsDeleteOne);
+  .get(ctrlReviews.reviewsReadOne) // get one review
+  .put(ctrlReviews.reviewsUpdateOne) // update a review
+  .delete(ctrlReviews.reviewsDeleteOne); // delete a review
 
+// export the express.Router() with the above routes added to it
 module.exports = router;
