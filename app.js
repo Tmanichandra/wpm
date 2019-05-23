@@ -6,9 +6,10 @@ const path = require("path");
 const favicon = require("serve-favicon");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+
 // db.js does not export functions, so does NOT need a var name assigned
-// connects Express/Node to Mongoose db models
-require("./app_server/models/db");
+// connects Express/Node to Mongoose db models in app_api
+require("./app_api/models/db");
 
 // VIEWS router
 const indexRouter = require("./app_server/routes/index");
