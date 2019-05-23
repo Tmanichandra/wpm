@@ -17,6 +17,12 @@ const ctrlReviews = require("../controllers/reviews");
 // list the common pathname in the param of router.route(pathname),
 // then chain on all REST CRUD methods with their controller methods to call
 
+// the router.get, .post, .put, and .delete methods 
+// pass data INTO their parameter functions as "req" (the request),
+// AND ALSO pass in an object to the "res" (the result) parameter
+// which is given a value by the Mongoose request,
+// and then the "res" object data is passed back up the router to the Express app
+
 // locations collection routes and chains of REST methods + controllers
 router
   .route("/locations")
