@@ -64,7 +64,7 @@ const reviewSchema = new mongoose.Schema({
 });
 
 // ==================================================
-// BASIC LOCATION INFO: PRIMARY/PARENT DOCUMENT SCHEMA
+// MAIN DOCUMENT SCHEMA : BASIC LOCATION INFO
 // ==================================================
 
 // create and define the Schema for locations.js
@@ -95,14 +95,15 @@ const locationSchema = new mongoose.Schema({
     // coordinates are an array of Numbers (long: -180 to 180, lat: -90 to 90)
     coordinates: [Number]
   },
-  // Array includes data from openingTimesSchema subdocument Schema, above
+  // USE openingTimesSchema subdocument Schema
   // Array can include multiple objects for days/day groups of opening/closing times
   openingTimes: [openingTimeSchema],
-  // Array includes multiple REVIEW data objects, includes reviewSchema subdoc schema
+  // USE reviewSchema subdocument Schema
+  // Array includes multiple REVIEW data objects
   reviews: [reviewSchema]
 });
 
-// make the coords: path an INDEX in locationSchema to speed up coordinate-based queries
+// ADD ANOTHER INDEX to main locationSchema (coords:) to speed up coordinate-based queries
 // "2dsphere" allows long/lat calculations on coordinate queries
 locationSchema.index({ coords: "2dsphere" });
 

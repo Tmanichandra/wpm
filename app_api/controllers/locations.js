@@ -24,18 +24,21 @@ const locationsCreate = (req, res) => {
 // GET /locations/:locationid
 const locationsReadOne = (req, res) => {
   Loc
-    // pass query method the data at the /:locationid portion of HTTP path
+    // req.params contains data from URL parameters
     .findById(req.params.locationid)
-    // then execute the query with a callback function to run
-    // after .exec(error, queryReturnData) runs the preceeding query
+    // execute query with .exec() with callback to handle response and create result (res)
     .exec((err, location) => {
-      // the callback function takes the data returned from query (location)
-      // and sets that (location) data as the .json() data value of res,
-      // and also sets (200) as as successful result HTTP status code
-      res
-        .status(200)
-        .json(location);
-    })  
+      // conditionals for error handling:
+      if (!location) {
+        // if no (location) data returned, return (exit) and res JSON message
+        return res.status(404).json({ message: "location not found" });
+      } else if (err) {
+        // or if an error occurred, return (exit) and res JSON error
+        return res.status(404).json(err);
+      }
+      // otherwise, res status and JSON data, (location) is data returned from query
+      res.status(200).json(location);
+    });
 };
 
 // put() /locations/:locationid

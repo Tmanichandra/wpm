@@ -17,8 +17,39 @@ const reviewsCreate = (req, res) => {
 
 // GET /locations/:locationid/reviews/:reviewid
 const reviewsReadOne = (req, res) => {
-  // placeholder response, until connected to db
-  res.status(200).json({ status: "success" });
+  Loc
+    // find a document whose _id matches the request URL's :locationid data
+    .findById(req.params.locationid)
+    // but only ask for the name: and reviews: data to be returned (not all document data)
+    .select("name reviews")
+    // execute query, return data into 2nd param's "location" object
+    .exec((err, location) => {
+      // if a reviews: path exists and has at least 1 review object,
+      if (location.reviews && location.reviews.length > 0) {
+        // Mongoose .id() method, use :reviewid to find that review in location.reviews
+        const review = location.reviews.id(req.params.reviewid);
+        console.log(review);
+        if (!review) {
+          // if that review is not in location.reviews,
+          return res.status(404).json({ message: "review not found" });
+        } else {
+          // otherwise create "response" object to return as JSON data (no let/const/var)
+          response = {
+            // from main "location" document, return location's (queried) name: and (given) _id:
+            location: {
+              name: location.name,
+              id: req.params.locationid
+            },
+            // and return location's reviews: with just the one review queried
+            review
+          };
+          return res.status(200).json(response);
+        }
+      } else {
+        // but if reviews: path doesn't exist, or it exists but has 0 review objects
+        return res.status(404).json({ message: "No reviews found" });
+      }
+    });
 };
 
 // put() /locations/:locationid/reviews/:reviewid

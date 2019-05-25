@@ -1,8 +1,5 @@
-// https://mean-loc8r-1.herokuapp.com/api/
-// this file holds all API route definitions, referenced by main app.js file
-
-// all routes handled here are already prefixed with /api
-// so do not include /api in route pathnames
+// API router
+// do not include /api in route pathnames
 
 // import the Express Router in order to add routes to it
 const express = require("express");
@@ -23,26 +20,28 @@ const ctrlReviews = require("../controllers/reviews");
 // which is given a value by the Mongoose request,
 // and then the "res" object data is passed back up the router to the Express app
 
-// locations collection routes and chains of REST methods + controllers
+// all locations
 router
   .route("/locations")
   .get(ctrlLocations.locationsListByDistance) // get all locations
   .post(ctrlLocations.locationsCreate); // create a new location
 
+// specific location
 router
   .route("/locations/:locationid")
-  .get(ctrlLocations.locationsReadOne) // get one location
+  .get(ctrlLocations.locationsReadOne) // get one location - DONE
   .put(ctrlLocations.locationsUpdateOne) // update a location's data
   .delete(ctrlLocations.locationsDeleteOne); // delete a location
 
-// reviews subdocument routes and chains of REST methods + controllers
+// all reviews
 router
   .route("/locations/:locationid/reviews")
   .post(ctrlReviews.reviewsCreate); // create a new review
 
+// specific review
 router
   .route("/locations/:locationid/reviews/:reviewid")
-  .get(ctrlReviews.reviewsReadOne) // get one review
+  .get(ctrlReviews.reviewsReadOne) // get one review - CURRENT
   .put(ctrlReviews.reviewsUpdateOne) // update a review
   .delete(ctrlReviews.reviewsDeleteOne); // delete a review
 
