@@ -23,7 +23,7 @@ const ctrlReviews = require("../controllers/reviews");
 // all locations
 router
   .route("/locations")
-  .get(ctrlLocations.locationsListByDistance) // get all locations
+  .get(ctrlLocations.locationsListByDistance) // get all locations - CURRENT
   .post(ctrlLocations.locationsCreate); // create a new location
 
 // specific location
@@ -41,7 +41,7 @@ router
 // specific review
 router
   .route("/locations/:locationid/reviews/:reviewid")
-  .get(ctrlReviews.reviewsReadOne) // get one review - CURRENT
+  .get(ctrlReviews.reviewsReadOne) // get one review - DONE
   .put(ctrlReviews.reviewsUpdateOne) // update a review
   .delete(ctrlReviews.reviewsDeleteOne); // delete a review
 

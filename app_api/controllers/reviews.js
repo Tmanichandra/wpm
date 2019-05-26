@@ -28,7 +28,7 @@ const reviewsReadOne = (req, res) => {
       if (location.reviews && location.reviews.length > 0) {
         // Mongoose .id() method, use :reviewid to find that review in location.reviews
         const review = location.reviews.id(req.params.reviewid);
-        console.log(review);
+        // console.log(review);
         if (!review) {
           // if that review is not in location.reviews,
           return res.status(404).json({ message: "review not found" });

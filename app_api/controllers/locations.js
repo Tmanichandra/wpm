@@ -10,9 +10,59 @@ const mongoose = require("mongoose");
 const Loc = mongoose.model("Location");
 
 // GET /locations
-const locationsListByDistance = (req, res) => {
-  // placeholder response, until connected to db
-  res.status(200).json({ status: "success" });
+const locationsListByDistance = async (req, res) => {
+  // convert lng and lat from String to Float
+  const lng = parseFloat(req.query.lng);
+  const lat = parseFloat(req.query.lat);
+  // construct geoJSON point from (numberfied) lng, lat
+  const point = {
+    type: "Point",
+    coordinates: [lng, lat]
+  };
+  // define $geoNear options for db query
+  const geoOptions = {
+    distanceField: "distance.calculated", // object property name for distance data
+    key: "coords", // use secondary "coords" key for faster db query results
+    spherical: true, // matches Location model, where { coords: "2dsphere" }
+    maxDistance: 20000, // meters, so 20,000m is 20km
+    limit: 10 // either "num" or "limit" (max # results returned)
+  };
+  // error handler: if either lng or lat is not provided, then RETURN with message
+  if (!lng || !lat) {
+    return res.status(404).json({ message: "both lng and lat query parameters are required" });
+  }
+  // use a try/catch block to execute an async/await function's query
+  try {
+    // $geoNear db query, results is an array of documents
+    // use "await" to pause function until Promise resolves and "results" data returned
+    const results = await Loc.aggregate([
+      {
+        $geoNear: {
+          near: point, // geoJSON point containing lng, lat
+          ...geoOptions // (rest operator) all other query options
+        }
+      }
+    ]);
+    // console.log(results);
+    // after "results" data is set, "await" allows code execution below to continue
+    // map() results (all document data) to return only needed document paths data
+    const locations = results.map(result => {
+      return {
+        _id: result._id,
+        name: result.name,
+        address: result.address,
+        rating: result.rating,
+        facilities: result.facilities,
+        distance: `${result.distance.calculated.toFixed()}m` // round to whole meters
+      };
+    });
+    // console.log(locations);
+    // return "locations", an array of specific mapped data of all documents returned
+    return res.status(200).json(locations);
+  } catch (err) {
+    console.log(err);
+    res.status(404).json(err);
+  }
 };
 
 // post() /locations
