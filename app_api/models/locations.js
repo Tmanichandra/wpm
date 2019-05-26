@@ -90,10 +90,8 @@ const locationSchema = new mongoose.Schema({
   // long/lat coords in a GeoJSON pair format, sample data:
   // "coords": [-0.9690884, 51.455041]
   coords: {
-    // shouldn't this be "type: Array"? Don't understand this syntax
-    type: { type: String },
-    // coordinates are an array of Numbers (long: -180 to 180, lat: -90 to 90)
-    coordinates: [Number]
+    type: [Number], // String data needs to be parseFloat() converted
+    index: "2dsphere" // make coords: an index, and set "2dsphere" for geoNear calculations
   },
   // USE openingTimesSchema subdocument Schema
   // Array can include multiple objects for days/day groups of opening/closing times
@@ -102,10 +100,6 @@ const locationSchema = new mongoose.Schema({
   // Array includes multiple REVIEW data objects
   reviews: [reviewSchema]
 });
-
-// ADD ANOTHER INDEX to main locationSchema (coords:) to speed up coordinate-based queries
-// "2dsphere" allows long/lat calculations on coordinate queries
-locationSchema.index({ coords: "2dsphere" });
 
 // ==================================================
 // COMPILE SCHEMA INTO A MODEL
