@@ -30,13 +30,13 @@ router
 router
   .route("/locations/:locationid")
   .get(ctrlLocations.locationsReadOne) // get one location - DONE
-  .put(ctrlLocations.locationsUpdateOne) // update a location's data
+  .put(ctrlLocations.locationsUpdateOne) // update a location's data - CURRENT
   .delete(ctrlLocations.locationsDeleteOne); // delete a location
 
 // all reviews
 router
   .route("/locations/:locationid/reviews")
-  .post(ctrlReviews.reviewsCreate); // create a new review - CURRENT
+  .post(ctrlReviews.reviewsCreate); // create a new review - DONE
 
 // specific review
 router

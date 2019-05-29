@@ -9,6 +9,8 @@ const mongoose = require("mongoose");
 // connect to the Mongoose model for "locations" collection
 const Loc = mongoose.model("Location");
 
+// ==============================================================================
+
 // GET /locations
 const locationsListByDistance = async (req, res) => {
   // convert lng and lat from String to Float
@@ -65,9 +67,10 @@ const locationsListByDistance = async (req, res) => {
   }
 };
 
+// ==============================================================================
+
 // POST /locations
 const locationsCreate = (req, res) => {
-
   // call .create() on the document model
   Loc.create(
     // .create() first arg: document data object
@@ -111,6 +114,8 @@ const locationsCreate = (req, res) => {
   );
 };
 
+// ==============================================================================
+
 // GET /locations/:locationid
 const locationsReadOne = (req, res) => {
   Loc
@@ -131,17 +136,68 @@ const locationsReadOne = (req, res) => {
     });
 };
 
+// ==============================================================================
+
 // put() /locations/:locationid
 const locationsUpdateOne = (req, res) => {
-  // placeholder response, until connected to db
-  res.status(200).json({ status: "success" });
+  // perform initial check to make sure a locationid was in the API URL
+  if (!req.params.locationid) {
+    // return out of controller function and res a "not found" message back
+    return res.status(404).json({ message: "Location not found, locationid is required" });
+  }
+  // but if locationid provided, good to go--keep going, do a .findById() on it
+  Loc.findById(req.params.locationid)
+    // and this time -IGNORE (don't retrieve) "reviews" and "rating" data from document
+    // for less data transfer (and shorter to tell it what we DON'T want with this operation)
+    .select("-reviews -rating")
+    // then run .exec() to do what you wanna do .exec(error, documentData) {}
+    .exec((err, location) => {
+      if (!location) {
+        // if no location with that locationid is found, return a message
+        return res.status(404).json({ message: "locationid not found" });
+      } else if (err) {
+        // or if there was an error, return the error
+        return res.status(400).json(err);
+      }
+      // and if it passes those checks, set your desired data changes
+      location.name = req.body.name;
+      location.address = req.body.address;
+      location.facilities = req.body.facilities.split(",");
+      location.coords = [parseFloat(req.body.lng), parseFloat(req.body.lat)];
+      location.openingTimes = [
+        {
+          days: req.body.days1,
+          opening: req.body.opening1,
+          closing: req.body.closing1,
+          closed: req.body.closed1
+        },
+        {
+          days: req.body.days2,
+          opening: req.body.opening2,
+          closing: req.body.closing2,
+          closed: req.body.closed2
+        }
+      ];
+      // and then do a .save() to send those data changes back to the db
+      location.save((err, location) => {
+        if (err) {
+          res.status(404).json(err);
+        } else {
+          res.status(200).json(location);
+        }
+      });
+    });
 };
+
+// ==============================================================================
 
 // delete() /locations/:locationid
 const locationsDeleteOne = (req, res) => {
   // placeholder response, until connected to db
   res.status(200).json({ status: "success" });
 };
+
+// ==============================================================================
 
 // export controller functions for use as methods
 // of ctrlLocations in API routes/index.js

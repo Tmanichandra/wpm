@@ -12,6 +12,7 @@ const Loc = mongoose.model("Location");
 // ==============================================================================
 // createReview controller
 // and it's helper function, it's helper's helper, and it's helpers helpers helper
+// these helper functions broken out so they can be used by other controllers
 // ==============================================================================
 
 // helper's helper's helper function for createReview
