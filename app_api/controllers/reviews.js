@@ -10,9 +10,8 @@ const mongoose = require("mongoose");
 const Loc = mongoose.model("Location");
 
 // ==============================================================================
-// createReview controller
-// and it's helper function, it's helper's helper, and it's helpers helpers helper
-// these helper functions broken out so they can be used by other controllers
+// updateAverageRating() helper function, and it's helper doSetAverageRating()
+// broken out for use by both reviewsCreate AND reviewsUpdateOne controllers
 // ==============================================================================
 
 // helper's helper's helper function for createReview
@@ -68,7 +67,9 @@ const updateAverageRating = locationId => {
     });
 };
 
-// ---------------------------------------
+// ==============================================================================
+// createReview controller and it's helper function
+// ==============================================================================
 
 // adds a new "review" subdocument to a "locations" document and saves that doc
 // used by reviewsCreate controller
@@ -179,10 +180,56 @@ const reviewsReadOne = (req, res) => {
 // reviewsUpdateOne controller
 // ==============================================================================
 
-// put() /locations/:locationid/reviews/:reviewid
+// PUT /locations/:locationid/reviews/:reviewid
 const reviewsUpdateOne = (req, res) => {
-  // placeholder response, until connected to db
-  res.status(200).json({ status: "success" });
+  // if EITHER the locationid OR reviewid are not sent,
+  if (!req.params.locationid || !req.params.reviewid) {
+    // return an error message
+    return res.status(404).json({ message: "Not found, locationid and reviewid both required" });
+  }
+  // but if both locationid and reviewid recieved, then find the document,
+  Loc.findById(req.params.locationid)
+    // and select the "reviews" path/field that holds the subdocuments
+    .select("reviews")
+    // and start doing stuff
+    .exec((err, location) => {
+      // check for existence of that location, and handle any errors
+      if (!location) {
+        return res.status(404).json({ message: "Location not found" });
+      } else if (err) {
+        return res.status(400).json(err);
+      }
+      // if location exists and no errors occurred,
+      // and if "reviews" path/field exists AND it has one or more review objects in it,
+      if (location.reviews && location.reviews.length > 0) {
+        // use Mongoose .id() method to select a review with the requested reviewid
+        const thisReview = location.reviews.id(req.params.reviewid);
+        // but if a review with that reviewid does not exist
+        if (!thisReview) {
+          // send a "not found" message
+          res.status(404).json({ message: "Review not found" });
+        } else {
+          // otherwise, if everything is good, set your change data on thisReview variable
+          thisReview.author = req.body.author;
+          thisReview.rating = req.body.rating;
+          thisReview.reviewText = req.body.reviewText;
+          // then run .save(), whose callback will also run updateAverageRating() helper
+          location.save((err, location) => {
+            if (err) {
+              res.status(404).json(err);
+            } else {
+              // run updateAverageRating() and pass it the main document's _id
+              updateAverageRating(location._id);
+              // and return the thisReview object data as the operation result
+              res.status(200).json(thisReview);
+            }
+          });
+        }
+      } else {
+        // but if either "reviews" doesn't exist, or if it exists but contains 0 review objects
+        res.status(404).json({ message: "No review to update" });
+      }
+    });
 };
 
 // ==============================================================================

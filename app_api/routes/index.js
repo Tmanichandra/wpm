@@ -30,7 +30,7 @@ router
 router
   .route("/locations/:locationid")
   .get(ctrlLocations.locationsReadOne) // get one location - DONE
-  .put(ctrlLocations.locationsUpdateOne) // update a location's data - CURRENT
+  .put(ctrlLocations.locationsUpdateOne) // update a location's data - DONE
   .delete(ctrlLocations.locationsDeleteOne); // delete a location
 
 // all reviews
@@ -42,7 +42,7 @@ router
 router
   .route("/locations/:locationid/reviews/:reviewid")
   .get(ctrlReviews.reviewsReadOne) // get one review - DONE
-  .put(ctrlReviews.reviewsUpdateOne) // update a review
+  .put(ctrlReviews.reviewsUpdateOne) // update a review - CURRENT
   .delete(ctrlReviews.reviewsDeleteOne); // delete a review
 
 // export the express.Router() with the above routes added to it
