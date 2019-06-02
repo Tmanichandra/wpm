@@ -176,6 +176,12 @@ const locationsUpdateOne = (req, res) => {
           opening: req.body.opening2,
           closing: req.body.closing2,
           closed: req.body.closed2
+        },
+        {
+          days: req.body.days3,
+          opening: req.body.opening3,
+          closing: req.body.closing3,
+          closed: req.body.closed3
         }
       ];
       // and then do a .save() to send those data changes back to the db

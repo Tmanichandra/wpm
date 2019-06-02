@@ -67,8 +67,8 @@ const reviewSchema = new mongoose.Schema({
 // MAIN DOCUMENT SCHEMA : BASIC LOCATION INFO
 // ==================================================
 
-// create and define the Schema for locations.js
-// refer to FPO data in the controller, moved back from views during dev process
+// define the Schema for the Location model ("locations" collection in MongoDB)
+// based on FPO data in the controller, moved back from views during dev process
 const locationSchema = new mongoose.Schema({
   // _id: ObjectId(..) automatically generated
   // name of location is required
@@ -109,5 +109,5 @@ const locationSchema = new mongoose.Schema({
 // if hooking into existing collection, INCLUDE EXISTING COLLECTION NAME
 // ==================================================
 
-// MongoDB will name the collection "locations" ("Location" as plural and lowercase)
+// compile the defined Schema into a Mongoose Model
 mongoose.model("Location", locationSchema);
