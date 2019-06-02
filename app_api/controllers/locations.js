@@ -138,7 +138,7 @@ const locationsReadOne = (req, res) => {
 
 // ==============================================================================
 
-// put() /locations/:locationid
+// PUT /locations/:locationid
 const locationsUpdateOne = (req, res) => {
   // perform initial check to make sure a locationid was in the API URL
   if (!req.params.locationid) {
@@ -191,10 +191,27 @@ const locationsUpdateOne = (req, res) => {
 
 // ==============================================================================
 
-// delete() /locations/:locationid
+// DELETE /locations/:locationid
 const locationsDeleteOne = (req, res) => {
-  // placeholder response, until connected to db
-  res.status(200).json({ status: "success" });
+  // destructure var for req.params.locationid from API URL
+  const { locationid } = req.params;
+  // as long as locationid has a value sent,
+  if (locationid) {
+    // pass it to Mongoose's delete method
+    Loc.findByIdAndRemove(locationid)
+      // and execute the delete method with a callback
+      .exec((err, location) => {
+        // if error (can't find the document with that _id)
+        if (err) {
+          return res.status(404).json(err);
+        }
+        // otherwise if no error, return 204 with "null" data returned
+        res.status(204).json(null);
+      });
+  } else {
+    // but if locationid value has not been sent in the API URL
+    res.status(404).json({ message: "No location id provided." });
+  }
 };
 
 // ==============================================================================
