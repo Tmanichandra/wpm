@@ -197,7 +197,7 @@ const locationsDeleteOne = (req, res) => {
   const { locationid } = req.params;
   // as long as locationid has a value sent,
   if (locationid) {
-    // pass it to Mongoose's delete method
+    // pass it to Mongoose's combo Find AND Remove method
     Loc.findByIdAndRemove(locationid)
       // and execute the delete method with a callback
       .exec((err, location) => {

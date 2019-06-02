@@ -23,26 +23,26 @@ const ctrlReviews = require("../controllers/reviews");
 // all locations
 router
   .route("/locations")
-  .get(ctrlLocations.locationsListByDistance) // get all locations - DONE
-  .post(ctrlLocations.locationsCreate); // create a new location - DONE
+  .get(ctrlLocations.locationsListByDistance) // get all locations
+  .post(ctrlLocations.locationsCreate); // create a new location
 
 // specific location
 router
   .route("/locations/:locationid")
-  .get(ctrlLocations.locationsReadOne) // get one location - DONE
-  .put(ctrlLocations.locationsUpdateOne) // update a location's data - DONE
-  .delete(ctrlLocations.locationsDeleteOne); // delete a location - CURRENT
+  .get(ctrlLocations.locationsReadOne) // get one location
+  .put(ctrlLocations.locationsUpdateOne) // update a location's data
+  .delete(ctrlLocations.locationsDeleteOne); // delete a location
 
 // all reviews
 router
   .route("/locations/:locationid/reviews")
-  .post(ctrlReviews.reviewsCreate); // create a new review - DONE
+  .post(ctrlReviews.reviewsCreate); // create a new review
 
 // specific review
 router
   .route("/locations/:locationid/reviews/:reviewid")
-  .get(ctrlReviews.reviewsReadOne) // get one review - DONE
-  .put(ctrlReviews.reviewsUpdateOne) // update a review - DONE
+  .get(ctrlReviews.reviewsReadOne) // get one review
+  .put(ctrlReviews.reviewsUpdateOne) // update a review
   .delete(ctrlReviews.reviewsDeleteOne); // delete a review
 
 // export the express.Router() with the above routes added to it

@@ -238,8 +238,56 @@ const reviewsUpdateOne = (req, res) => {
 
 // delete() /locations/:locationid/reviews/:reviewid
 const reviewsDeleteOne = (req, res) => {
-  // placeholder response, until connected to db
-  res.status(200).json({ status: "success" });
+  // set two vars by destructuring req.params.locationid and req.params.reviewid
+  const { locationid, reviewid } = req.params;
+  // if EITHER locationid or reviewid are not provided by the API URL,
+  if (!locationid || !reviewid) {
+    // return error status and message
+    return res.status(404).json({ message: "locationid and reviewid BOTH requiered" });
+  }
+  // otherwise have Mongoose find the parent document,
+  Loc.findById(locationid)
+    // and select only the "reviews" data path holding the subdocuments
+    .select("reviews")
+    // and then execute that find and select, with callback doing the rest
+    .exec((err, location) => {
+      // if no location found with that _id,
+      if (!location) {
+        return res.status(404).json({ message: "Location not found" });
+      } else if (err) {
+        // or if an error occured, return the error message generated
+        return res.status(400).json(err);
+      }
+      // if error tests pass, and
+      // if "reviews" path exists and it contains at least one review
+      if (location.reviews && location.reviews.length > 0) {
+        // if the reviewid of a review isn't found in "reviews" of that document
+        if (!location.reviews.id(reviewid)) {
+          // return an error that the review wasn't found
+          return res.status(404).json({ message: "Review not found" });
+        } else {
+          // otherwise if the review was found, remove it
+          location.reviews.id(reviewid).remove();
+          // and then SAVE THE MAIN LOCATION DOCUMENT
+          location.save(err => {
+            // if an error was passed into .save()'s (err) parameter,
+            if (err) {
+              // return the error message
+              return res.status(404).json(err);
+            } else {
+              // but if the save completed normally, run the average rating updater
+              // to recalculate the location document's average rating value
+              updateAverageRating(location._id);
+              // and return a success status with "null" data returned
+              res.status(204).json(null);
+            }
+          });
+        }
+      } else {
+        // but if either "reviews" path doesn't exist, OR it holds 0 reviews,
+        res.status(404).json({ message: "No Review to delete" });
+      }
+    });
 };
 
 // ==============================================================================
