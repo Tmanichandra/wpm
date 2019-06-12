@@ -18,8 +18,10 @@ if (process.env.NODE_ENV === "production") {
   apiOptions.server = "https://mean-loc8r-1.herokuapp.com/";
 }
 
-// controller for rendering the "/" home page index view (list of locations page)
-const homelist = (req, res) => {
+// ========================================================
+
+// separate render function for the "homelist" controller to use
+const renderHomepage = (req, res, responseBody) => {
   // 1st arg: name of the .pug file to render in /views
   res.render("locations-list", {
     // 2nd arg: JS object containing data to render in the 1st arg page view
@@ -30,32 +32,66 @@ const homelist = (req, res) => {
     },
     sidebar:
       "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake, or a pint? Let Loc8r help you find the place you're looking for, mate.",
-    // locations: paths to model in locations.js Mongoose Schema
-    locations: [
-      {
-        name: "Starcups",
-        address: "125 High Street, Reading, RG6 1PS",
-        rating: 3,
-        facilities: ["Hot drinks", "Food", "Premium wifi"],
-        distance: "100m"
-      },
-      {
-        name: "Cafe Hero",
-        address: "150 High Street, Reading, RG6 1PS",
-        rating: 4,
-        facilities: ["Hot drinks", "Premium wifi"],
-        distance: "200m"
-      },
-      {
-        name: "Burger Queen",
-        address: "175 High Street, Reading, RG6 1PS",
-        rating: 2,
-        facilities: ["Food", "Premium wifi"],
-        distance: "250m"
-      }
-    ]
+    // locations: data returned by the body of the request() API call
+    locations: responseBody
+    // // locations: paths to model in locations.js Mongoose Schema
+    // // temporary hard-coded data until API is connected to return db data
+    // locations: [
+    //   {
+    //     name: "Starcups",
+    //     address: "125 High Street, Reading, RG6 1PS",
+    //     rating: 3,
+    //     facilities: ["Hot drinks", "Food", "Premium wifi"],
+    //     distance: "100m"
+    //   },
+    //   {
+    //     name: "Cafe Hero",
+    //     address: "150 High Street, Reading, RG6 1PS",
+    //     rating: 4,
+    //     facilities: ["Hot drinks", "Premium wifi"],
+    //     distance: "200m"
+    //   },
+    //   {
+    //     name: "Burger Queen",
+    //     address: "175 High Street, Reading, RG6 1PS",
+    //     rating: 2,
+    //     facilities: ["Food", "Premium wifi"],
+    //     distance: "250m"
+    //   }
+    // ]
   });
 };
+
+// --------------
+
+// controller for rendering the "/" home page index view (list of locations page)
+const homelist = (req, res) => {
+  // define api/path which extends the base URL
+  const path = "/api/locations";
+
+  // define the request object
+  const requestOptions = {
+    // template literal adds "path" onto the base URL
+    url: `${apiOptions.server}${path}`,
+    method: "GET",
+    json: {},
+    // query string parameter data to send with request
+    qs: {
+      lng: -0.7992599,
+      lat: 51.378091,
+      maxDistance: 20
+    }
+  };
+
+  // then make the actual "request" function call, with request object and callback
+  request(requestOptions, (err, response, body) => {
+    // have callback execute separately defined render function (above)
+    // pass the "body" parameter data of callback into renderHomepage()
+    renderHomepage(req, res, body);
+  });
+};
+
+// ========================================================
 
 // controller for rendering the "/location" page view
 const locationInfo = (req, res) => {
@@ -111,6 +147,8 @@ const locationInfo = (req, res) => {
   });
 };
 
+// ========================================================
+
 // controller for rendering the "/location/review/new" page view
 const addReview = (req, res) => {
   // render views/index.pug, use "Add review" as the data for #{title}
@@ -120,8 +158,12 @@ const addReview = (req, res) => {
   });
 };
 
+// ========================================================
+
 module.exports = {
   homelist,
   locationInfo,
   addReview
 };
+
+// ========================================================
