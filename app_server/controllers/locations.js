@@ -7,6 +7,17 @@
 // JS HTTP request libraries: Axios, Request, Superagent, Fetch, Supertest
 const request = require("request");
 
+// configure API routes based on server production or dev environments
+// set localhost dev server as default URL base for API calls,
+const apiOptions = {
+  server: "http://localhost:3000"
+};
+// but add conditional to check NODE_ENV for production environment
+if (process.env.NODE_ENV === "production") {
+  // if production environment, use production server URL base
+  apiOptions.server = "https://mean-loc8r-1.herokuapp.com/";
+}
+
 // controller for rendering the "/" home page index view (list of locations page)
 const homelist = (req, res) => {
   // 1st arg: name of the .pug file to render in /views
