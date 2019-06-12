@@ -2,6 +2,11 @@
 // route to view templates in app_server/views/.. for res.render is defined in app.js
 // ========================================================
 
+// this is the only file that will be making API calls, so this is the only file
+// that needs to use the npm "request" module to use it to make API calls
+// JS HTTP request libraries: Axios, Request, Superagent, Fetch, Supertest
+const request = require("request");
+
 // controller for rendering the "/" home page index view (list of locations page)
 const homelist = (req, res) => {
   // 1st arg: name of the .pug file to render in /views
