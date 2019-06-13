@@ -20,6 +20,23 @@ if (process.env.NODE_ENV === "production") {
 
 // ========================================================
 
+// distance formatting helper function for meters and kilometers
+const formatDistance = distance => {
+  let thisDistance = 0;
+  let unit = "m";
+  if (distance > 1000) {
+    // if more than 1000 meters, convert to km with 1 decimal place
+    thisDistance = parseFloat(distance / 1000).toFixed(1);
+    unit = "km";
+  } else {
+    // otherwise if less than 1000 meters, round to whole integer (no decimals)
+    thisDistance = Math.floor(distance);
+  }
+  return thisDistance + unit;
+};
+
+// --------------
+
 // separate render function for the "homelist" controller to use
 const renderHomepage = (req, res, responseBody) => {
   // 1st arg: name of the .pug file to render in /views
@@ -34,31 +51,6 @@ const renderHomepage = (req, res, responseBody) => {
       "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake, or a pint? Let Loc8r help you find the place you're looking for, mate.",
     // locations: data returned by the body of the request() API call
     locations: responseBody
-    // // locations: paths to model in locations.js Mongoose Schema
-    // // temporary hard-coded data until API is connected to return db data
-    // locations: [
-    //   {
-    //     name: "Starcups",
-    //     address: "125 High Street, Reading, RG6 1PS",
-    //     rating: 3,
-    //     facilities: ["Hot drinks", "Food", "Premium wifi"],
-    //     distance: "100m"
-    //   },
-    //   {
-    //     name: "Cafe Hero",
-    //     address: "150 High Street, Reading, RG6 1PS",
-    //     rating: 4,
-    //     facilities: ["Hot drinks", "Premium wifi"],
-    //     distance: "200m"
-    //   },
-    //   {
-    //     name: "Burger Queen",
-    //     address: "175 High Street, Reading, RG6 1PS",
-    //     rating: 2,
-    //     facilities: ["Food", "Premium wifi"],
-    //     distance: "250m"
-    //   }
-    // ]
   });
 };
 
@@ -77,17 +69,23 @@ const homelist = (req, res) => {
     json: {},
     // query string parameter data to send with request
     qs: {
-      lng: -0.7992599,
-      lat: 51.378091,
+      lng: -0.9690000,
+      lat: 51.455000,
       maxDistance: 20
     }
   };
 
   // then make the actual "request" function call, with request object and callback
   request(requestOptions, (err, response, body) => {
-    // have callback execute separately defined render function (above)
-    // pass the "body" parameter data of callback into renderHomepage()
-    renderHomepage(req, res, body);
+    // .map() body data to use formatDistance() on distance values
+    let data = [];
+    data = body.map(item => {
+      item.distance = formatDistance(item.distance);
+      console.log(item);
+      return item;
+    });
+    // use external function to handle rendering data to page view
+    renderHomepage(req, res, data);
   });
 };
 

@@ -55,7 +55,7 @@ const locationsListByDistance = async (req, res) => {
         address: result.address,
         rating: result.rating,
         facilities: result.facilities,
-        distance: `${result.distance.calculated.toFixed()}m` // round to whole meters
+        distance: `${result.distance.calculated.toFixed()}` // round to whole meters
       };
     });
     // console.log(locations);
