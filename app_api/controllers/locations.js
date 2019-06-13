@@ -30,7 +30,7 @@ const locationsListByDistance = async (req, res) => {
     limit: 10 // either "num" or "limit" (max # results returned)
   };
   // error handler: if either lng or lat is not provided, then RETURN with message
-  if (!lng || !lat) {
+  if ( (!lng && lng!== 0) || (!lat && lat!== 0) ) {
     return res.status(404).json({ message: "both lng and lat query parameters are required" });
   }
   // use a try/catch block to execute an async/await function's query

@@ -27,7 +27,8 @@ block content
 
   .row
     .col-12.col-md-8
-
+      //- div with class="error" to display any error message sent
+      .error= message
       //- RENDER A Bootstrap .card for each location and it's data
       //- each [arbitraryKeyName] in [renderDataObjectArrayName]
       each location in locations
@@ -38,8 +39,9 @@ block content
               //- use "location" for "locations" array elements, access .name property
               a(href='/location')= location.name
 
-              //- call the mixin (function) "outputRating(rating)" for rating stars
-              +outputRating(location.rating)
+              small &nbsp;
+                //- call the mixin (function) "outputRating(rating)" for rating stars
+                +outputRating(location.rating)
 
               //- distance badge on same line as h4 location.name and stars outputRating
               span.badge.badge-pill.badge-default.float-right= location.distance

@@ -39,6 +39,19 @@ const formatDistance = distance => {
 
 // separate render function for the "homelist" controller to use
 const renderHomepage = (req, res, responseBody) => {
+  // handle possible: data array, empty array, or error message responseBody
+  let message = null; // message is null by default
+  // if responseBody is NOT an Array,
+  if (!(responseBody instanceof Array)) {
+    message = "API lookup error"; // set an error message
+    responseBody = []; // convert responseBody to empty array to prevent view error
+  } else {
+    // or if responseBody is empty (array with length of 0)
+    if (!responseBody.length) {
+      message = "No places found nearby"; // set a no places found message
+    }
+  }
+  // but if responseBody is a filled array, then continue (with message as null)
   // 1st arg: name of the .pug file to render in /views
   res.render("locations-list", {
     // 2nd arg: JS object containing data to render in the 1st arg page view
@@ -49,8 +62,9 @@ const renderHomepage = (req, res, responseBody) => {
     },
     sidebar:
       "Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake, or a pint? Let Loc8r help you find the place you're looking for, mate.",
-    // locations: data returned by the body of the request() API call
-    locations: responseBody
+    // return the responseBody locations array, and message value, as locations: data
+    locations: responseBody,
+    message
   });
 };
 
@@ -69,22 +83,33 @@ const homelist = (req, res) => {
     json: {},
     // query string parameter data to send with request
     qs: {
-      lng: -0.9690000,
-      lat: 51.455000,
+      lng: -0.969,
+      lat: 51.455,
       maxDistance: 20
+      // lng: 0,
+      // lat: 0,
+      // maxDistance: 0
+      // lng: 1, // test "no places found nearby"
+      // lat: 1, // test "no places found nearby"
+      // maxDistance: 0.002 // test "no places found nearby"
     }
   };
 
   // then make the actual "request" function call, with request object and callback
-  request(requestOptions, (err, response, body) => {
+  // destructure a statusCode var from statusCode in "response" param position
+  request(requestOptions, (err, { statusCode }, body) => {
     // .map() body data to use formatDistance() on distance values
     let data = [];
-    data = body.map(item => {
-      item.distance = formatDistance(item.distance);
-      console.log(item);
-      return item;
-    });
-    // use external function to handle rendering data to page view
+    // if successful data return,
+    if (statusCode === 200 && body.length) {
+      // fill "data" array with data "item"s having formatted .distance values
+      data = body.map(item => {
+        item.distance = formatDistance(item.distance);
+        console.log(item);
+        return item;
+      });
+    }
+    // use external function to handle rendering "data" array to page view
     renderHomepage(req, res, data);
   });
 };
