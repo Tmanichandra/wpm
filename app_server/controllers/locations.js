@@ -136,6 +136,27 @@ const renderDetailPage = (req, res, location) => {
 
 // --------------
 
+// error handler helper function for messages when statusCode is NOT 200
+const showError = (req, res, status) => {
+  let title = "";
+  let content = "";
+  if (status === 404) {
+    title = "404, Page Not Found";
+    content = "Oopsie. Can't find this page, sorry.";
+  } else {
+    title = `${status}, something's gone awry.`;
+    content = "Something, somewhere, has gone just a little bit wrongish.";
+  }
+  res.status(status);
+  // use the generic-text.pug template to render error message pages
+  res.render("generic-text", {
+    title,
+    content
+  });
+};
+
+// --------------
+
 // controller for rendering the "/location" page view
 const locationInfo = (req, res) => {
   // construct API URL path with /:locationid of URL call to view controller
@@ -148,18 +169,25 @@ const locationInfo = (req, res) => {
     json: {}
   };
   // and then make the API call by sending the request object to Request
-  request(requestOptions, (err, response, body) => {
+  // destructure statusCode variable from response param (don't need other response data)
+  request(requestOptions, (err, { statusCode }, body) => {
     // reformat the coords: data from an array to a lng/lat object
-    const data = body;
-    data.coords = {
-      lng: body.coords[0],
-      lat: body.coords[1]
-    };
-    // and have the callback (request result data handler) call the page render function
-    renderDetailPage(req, res, data);
-    // check request result data
-    // console.log(`HTTP Request status code: ${response.statusCode}`);
-    // console.log(data);
+    let data = body;
+    // as long as status is 200, run render code
+    if (statusCode === 200) {
+      data.coords = {
+        lng: body.coords[0],
+        lat: body.coords[1]
+      };
+      // and have the callback (request result data handler) call the page render function
+      renderDetailPage(req, res, data);
+      // check request result data
+      // console.log(`HTTP Request status code: ${response.statusCode}`);
+      // console.log(data);
+    } else {
+      // but if statusCode is NOT 200, pass the statusCode to showError() handler
+      showError(req, res, statusCode);
+    }
   });
 };
 
