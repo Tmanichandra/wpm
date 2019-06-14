@@ -74,7 +74,6 @@ const renderHomepage = (req, res, responseBody) => {
 const homelist = (req, res) => {
   // define api/path which extends the base URL
   const path = "/api/locations";
-
   // define the request object
   const requestOptions = {
     // template literal adds "path" onto the base URL
@@ -94,7 +93,6 @@ const homelist = (req, res) => {
       // maxDistance: 0.002 // test "no places found nearby"
     }
   };
-
   // then make the actual "request" function call, with request object and callback
   // destructure a statusCode var from statusCode in "response" param position
   request(requestOptions, (err, { statusCode }, body) => {
@@ -118,69 +116,51 @@ const homelist = (req, res) => {
 // ========================================================
 
 // separate function to handle page rendering of data on a location's details page
-const renderDetailPage = (req, res) => {
+const renderDetailPage = (req, res, location) => {
+  // check location data being passed in
+  console.log(location);
+
   // render views/index.pug, use "Location info" as the data for #{title}
   res.render("location-info", {
-    title: "Starcups",
+    title: location.name,
     pageHeader: {
-      title: "Loc8r"
+      title: location.name
     },
     sidebar: {
       context: "is on Loc8r because it has accessible wifi and space to sit down with your laptop and get some work done.",
       callToAction: "If you've been and you like it - or if you don't - please leave a review to help other people just like you."
     },
-    location: {
-      name: "Starcups",
-      address: "125 High Street, Reading, RG6 1PS",
-      rating: 3,
-      facilities: ["Hot drinks", "Food", "Premium wifi"],
-      coords: { lat: 51.455041, lng: -0.9690884 },
-      openingTimes: [
-        {
-          days: "Monday - Friday",
-          opening: "7:00am",
-          closing: "7:00pm",
-          closed: false
-        },
-        {
-          days: "Saturday",
-          opening: "8:00am",
-          closing: "5:00pm",
-          closed: false
-        },
-        {
-          days: "Sunday",
-          closed: true
-        }
-      ],
-      reviews: [
-        {
-          author: "Simon Holmes",
-          rating: 5,
-          timestamp: "16 July 2013",
-          reviewText: "What a great place. I can't say enough good things about it."
-        },
-        {
-          author: "Charlie Chaplin",
-          rating: 3,
-          timestamp: "16 June 2013",
-          reviewText: "It was okay. Coffee wasn't great, but the wifi was fast."
-        }
-      ]
-    }
+    location // and just include the whole location object with all it's data for PUG
   });
 };
 
+// --------------
+
 // controller for rendering the "/location" page view
 const locationInfo = (req, res) => {
-  // 
+  // construct API URL path with /:locationid of URL call to view controller
   const path = `/api/locations/${req.params.locationid}`;
-  // 
+  // construct API request object to send to API URL
   const requestOptions = {
+    // attach above path to end of dev or production server base URL
     url: `${apiOptions.server}${path}`,
-
-  }
-  renderDetailPage(req, res);
+    method: "GET",
+    json: {}
+  };
+  // and then make the API call by sending the request object to Request
+  request(requestOptions, (err, response, body) => {
+    // reformat the coords: data from an array to a lng/lat object
+    const data = body;
+    data.coords = {
+      lng: body.coords[0],
+      lat: body.coords[1]
+    };
+    // and have the callback (request result data handler) call the page render function
+    renderDetailPage(req, res, data);
+    // check request result data
+    // console.log(`HTTP Request status code: ${response.statusCode}`);
+    // console.log(data);
+  });
 };
 
 // ========================================================
