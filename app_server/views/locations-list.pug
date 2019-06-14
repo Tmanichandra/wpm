@@ -36,8 +36,8 @@ block content
         .card
           .card-block
             h4
-              //- use "location" for "locations" array elements, access .name property
-              a(href='/location')= location.name
+              //- attach href link with location _id to displayed location.name data
+              a(href=`/location/${location._id}`)= location.name
 
               small &nbsp;
                 //- call the mixin (function) "outputRating(rating)" for rating stars

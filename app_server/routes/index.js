@@ -13,7 +13,7 @@ const ctrlOthers = require("../controllers/others");
 
 // /location/.. routes and required controllers
 router.get("/", ctrlLocations.homelist); // list of all locations
-router.get("/location", ctrlLocations.locationInfo); // individual location details
+router.get("/location/:locationid", ctrlLocations.locationInfo); // a location's details
 router.get("/location/review/new", ctrlLocations.addReview); // review a location
 
 // other routes and required controllers

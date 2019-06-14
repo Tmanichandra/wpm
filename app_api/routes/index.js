@@ -1,5 +1,8 @@
 // API router
-// do not include /api in route pathnames
+
+// do not include /api in route pathnames:
+// app.use("/api", apiRoutes) 
+// in app.js attaches /api to all of these routes
 
 // import the Express Router in order to add routes to it
 const express = require("express");

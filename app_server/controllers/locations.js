@@ -15,7 +15,7 @@ const apiOptions = {
 // but add conditional to check NODE_ENV for production environment
 if (process.env.NODE_ENV === "production") {
   // if production environment, use production server URL base
-  apiOptions.server = "https://mean-loc8r-1.herokuapp.com/";
+  apiOptions.server = "https://mean-loc8r-1.herokuapp.com";
 }
 
 // ========================================================
@@ -115,9 +115,10 @@ const homelist = (req, res) => {
 };
 
 // ========================================================
+// ========================================================
 
-// controller for rendering the "/location" page view
-const locationInfo = (req, res) => {
+// separate function to handle page rendering of data on a location's details page
+const renderDetailPage = (req, res) => {
   // render views/index.pug, use "Location info" as the data for #{title}
   res.render("location-info", {
     title: "Starcups",
@@ -168,6 +169,18 @@ const locationInfo = (req, res) => {
       ]
     }
   });
+};
+
+// controller for rendering the "/location" page view
+const locationInfo = (req, res) => {
+  // 
+  const path = `/api/locations/${req.params.locationid}`;
+  // 
+  const requestOptions = {
+    url: `${apiOptions.server}${path}`,
+
+  }
+  renderDetailPage(req, res);
 };
 
 // ========================================================
