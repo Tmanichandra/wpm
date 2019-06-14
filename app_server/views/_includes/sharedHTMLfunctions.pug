@@ -2,6 +2,10 @@
 //- a "-" prefixed line indicates raw inline JS code
 //- NOTE: no { code block }, use indents instead
 //- whenever loop condition is true, evaluate indented code below
+
+//- --------------------------------------
+
+//- displays 5 ratings stars based on rating: number value (0-5)
 mixin outputRating(rating)
   small &nbsp;
     //- 1st loop displays # of solid stars equal to rating
@@ -10,3 +14,23 @@ mixin outputRating(rating)
     //- 2nd starts with rating # and fills remainder of 5 with hollow stars 
     - for (let i = rating; i < 5; i++)
       i.far.fa-star
+
+//- --------------------------------------
+
+//- mixin for reformatting an ISO date from createdOn (timestamp) value in reviews
+mixin formatDate(dateString)
+  //- convert ISO date string to a new Date object
+  - const date = new Date(dateString);
+  //- create a list of English language month names
+  - const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  //- create variables shorthand for values in the new Date object
+  - const d = date.getDate();
+  - const m = monthNames[date.getMonth()];
+  - const y = date.getFullYear();
+  //- create template literal from variable values
+  - const output = `${d} ${m} ${y}`;
+  //- and return output as the value of the formatDate() mixin
+  =output
+
+//- --------------------------------------
+

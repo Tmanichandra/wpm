@@ -68,7 +68,9 @@ block content
                       +outputRating(review.rating)
                     //- list the "author:" of each location.reviews object with "review" keyname
                     span.reviewAuthor &nbsp;&nbsp; #{review.author}
-                    small.reviewTimestamp &nbsp;&nbsp; #{review.timestamp}
+                    small.reviewTimestamp &nbsp;&nbsp; 
+                      //- use the formatDate() mixin to reformat raw ISO date string
+                      +formatDate(review.createdOn)
                   .col-12
                     //- !{} allows execution of HTML tags embedded in the text data
                     //- .replace uses a RegEx to replace all "\n" in the text with <br/> tags

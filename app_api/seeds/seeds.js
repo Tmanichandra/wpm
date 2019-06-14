@@ -108,7 +108,7 @@ db.locations.save({
 add more paths data to the {name: 'Starcups'} document
 note: manually adds an _id: ObjectId() to the reviews: object added
 since an object is being pushed into the new reviews:, reviews: type becomes Array
-timestamp: new Date(..) creates an ISODate(..) data entry out of passed date
+createdOn: new Date(..) creates an ISODate(..) data entry out of passed date
 
 db.locations.update({
   name: 'Starcups'
@@ -118,7 +118,7 @@ db.locations.update({
       author: 'Simon Holmes',
       _id: ObjectId(),
       rating: 5,
-      timestamp: new Date("Mar 12, 2017"),
+      createdOn: new Date("Mar 12, 2017"),
       reviewText: "What a great place."
     }
   }
@@ -165,7 +165,7 @@ db.locations.update({
       author: 'Ace of Base',
       _id: ObjectId(),
       rating: 4,
-      timestamp: new Date("July 1, 1991"),
+      createdOn: new Date("July 1, 1991"),
       reviewText: "Horsti vorkken dorki nork nork."
     }
   }
@@ -217,7 +217,7 @@ db.locations.update({
       author: 'Harvey the Rabbit',
       _id: ObjectId(),
       rating: 3,
-      timestamp: new Date("Jan 1, 1970"),
+      createdOn: new Date("Jan 1, 1970"),
       reviewText: "Hippity hop hop, hippity hop hop."
     }
   }
