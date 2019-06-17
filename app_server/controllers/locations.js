@@ -157,11 +157,11 @@ const showError = (req, res, status) => {
 
 // --------------
 
-// controller for rendering the "/location" page view
-const locationInfo = (req, res) => {
+// reusable helper function which uses any callback passed to it
+const getLocationInfo = (req, res, callback) => {
   // construct API URL path with /:locationid of URL call to view controller
   const path = `/api/locations/${req.params.locationid}`;
-  // construct API request object to send to API URL
+  // construct request object to send to API URL
   const requestOptions = {
     // attach above path to end of dev or production server base URL
     url: `${apiOptions.server}${path}`,
@@ -179,11 +179,8 @@ const locationInfo = (req, res) => {
         lng: body.coords[0],
         lat: body.coords[1]
       };
-      // and have the callback (request result data handler) call the page render function
-      renderDetailPage(req, res, data);
-      // check request result data
-      // console.log(`HTTP Request status code: ${response.statusCode}`);
-      // console.log(data);
+      // and run whatever callback function was passed into getLocationInfo
+      callback(req, res, data);
     } else {
       // but if statusCode is NOT 200, pass the statusCode to showError() handler
       showError(req, res, statusCode);
@@ -191,14 +188,62 @@ const locationInfo = (req, res) => {
   });
 };
 
+// --------------
+
+// controller for rendering the "/location" page view
+const locationInfo = (req, res) => {
+  // use generic getLocationInfo and pass it a callback which calls renderDetailPage
+  getLocationInfo(req, res, (req, res, responseData) => renderDetailPage(req, res, responseData));
+};
+
 // ========================================================
+
+// separate function for rendering the Add New Review form page
+// destructure .name property from all responseData passed in
+const renderReviewForm = (req, res, { name }) => {
+  // render location-review-form.pug, pass in destructured .name from responseData
+  res.render("location-review-form", {
+    title: `Review ${name} on Loc8r`,
+    pageHeader: { title: `Review ${name}` }
+  });
+};
 
 // controller for rendering the "/location/review/new" page view
 const addReview = (req, res) => {
-  // render views/index.pug, use "Add review" as the data for #{title}
-  res.render("location-review-form", {
-    title: "Review Starcups on Loc8r",
-    pageHeader: { title: "Review Starcups" }
+  // use generic getLocationInfo and pass it a callback which calls renderReviewForm
+  getLocationInfo(req, res, (req, res, responseData) => renderReviewForm(req, res, responseData));
+};
+
+// ========================================================
+
+// controller for rendering the "/location/review/new" page view
+const doAddReview = (req, res) => {
+  //
+  const locationid = req.params.locationid;
+  //
+  const path = `/api/locations/${locationid}/reviews`;
+  //
+  const postdata = {
+    author: req.body.name,
+    rating: parseInt(req.body.rating, 10),
+    reviewText: req.body.review
+  };
+  //
+  const requestOptions = {
+    url: `${apiOptions.server}${path}`,
+    method: "POST",
+    json: postdata
+  };
+  //
+  console.log(postdata);
+  console.log(requestOptions);
+  // 
+  request(requestOptions, (err, { statusCode }, body) => {
+    if (statusCode === 201) {
+      res.redirect(`/location/${locationid}`);
+    } else {
+      showError(req, res, statusCode);
+    }
   });
 };
 
@@ -207,7 +252,8 @@ const addReview = (req, res) => {
 module.exports = {
   homelist,
   locationInfo,
-  addReview
+  addReview,
+  doAddReview
 };
 
 // ========================================================

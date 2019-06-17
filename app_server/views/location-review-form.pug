@@ -9,7 +9,9 @@ block content
   .row
     .col-12.col-md-8
       //- form submit goes back to /location page
-      form(action='/location', method='get', role='form')
+      //- setting action= to empty string makes POST request to URL of current page
+      //- which we want, since we are using same route for GET and POST new review
+      form(action='', method='post', role='form')
         //- input for reviewers name
         .form-group.row
           label.col-10.col-sm-2.col-form-label(for='name') Name
