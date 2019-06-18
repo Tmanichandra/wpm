@@ -11,7 +11,7 @@ block content
       //- form submit goes back to /location page
       //- setting action= to empty string makes POST request to URL of current page
       //- which we want, since we are using same route for GET and POST new review
-      form(action='', method='post', role='form')
+      form#addReview(action='', method='post', role='form')
         //- if ?err=val (req.query.err) is tacked onto the URL to render this page, 
         - if (error == "val")
           //- then use a Bootstrap alert to display a message
