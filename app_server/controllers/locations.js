@@ -241,24 +241,32 @@ const doAddReview = (req, res) => {
     json: postdata
   };
   // console.log(requestOptions);
-  // make the actual request with (requestOptions, callback to handle data returned)
-  // deconstruct statusCode from RESPONSE, and name from BODY
-  request(requestOptions, (err, { statusCode }, { name }) => {
-    if (statusCode === 201) {
-      // if successful, go back to the location's main page view
-      res.redirect(`/location/${locationid}`);
-      // but, if the post attempt results in a simple ValidationError,
-    } else if (statusCode === 400 && name && name === "ValidationError") {
-      // send user back to the Create New Review page, WITH the error value in URL,
-      // so we can alert the user to the problem using ?err=val onto the GET route
-      // that calls addReview, which uses renderReviewForm to create the page view
-      res.redirect(`/location/${locationid}/review/new?err=val`);
-    } else {
-      // but if something else has gone wrong, console it display HTTP error code on page
-      console.log(body);
-      showError(req, res, statusCode);
-    }
-  });
+  // do an application-level data validation conditional before making request
+  // by making sure all postdata properties have a value
+  if (!postdata.author || !postdata.rating || !postdata.reviewText) {
+    // if any property doesn't have a value, do a redirect to New Review page with error
+    res.redirect(`/location/${locationid}/review/new?err=val`);
+  } else {
+    // but if all three fields have a value, then make the request
+    // make the actual request with (requestOptions, callback to handle data returned)
+    // deconstruct statusCode from RESPONSE, and name from BODY
+    request(requestOptions, (err, { statusCode }, { name }) => {
+      if (statusCode === 201) {
+        // if successful, go back to the location's main page view
+        res.redirect(`/location/${locationid}`);
+        // but, if the post attempt results in a simple ValidationError,
+      } else if (statusCode === 400 && name && name === "ValidationError") {
+        // send user back to the Create New Review page, WITH the error value in URL,
+        // so we can alert the user to the problem using ?err=val onto the GET route
+        // that calls addReview, which uses renderReviewForm to create the page view
+        res.redirect(`/location/${locationid}/review/new?err=val`);
+      } else {
+        // but if something else has gone wrong, console it display HTTP error code on page
+        console.log(body);
+        showError(req, res, statusCode);
+      }
+    });
+  }
 };
 
 // ========================================================
