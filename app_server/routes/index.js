@@ -1,4 +1,5 @@
 // main route handlers (a route and its controller) called by app.js
+// these routes use controllers in app_server (not app_api controllers)
 // =================================================================
 
 // require Express server and it's Router

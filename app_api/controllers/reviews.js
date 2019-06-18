@@ -92,6 +92,7 @@ const doAddReview = (req, res, location) => {
     // and execute the following callback code after the document is saved
     location.save((err, location) => {
       if (err) {
+        console.log(err);
         res.status(400).json(err);
       } else {
         // call the helper's helper function to update the location's average rating

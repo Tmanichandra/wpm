@@ -198,17 +198,19 @@ const locationInfo = (req, res) => {
 
 // ========================================================
 
-// separate function for rendering the Add New Review form page
+// separate function for actually rendering the Add New Review page, called by addReview
 // destructure .name property from all responseData passed in
 const renderReviewForm = (req, res, { name }) => {
   // render location-review-form.pug, pass in destructured .name from responseData
   res.render("location-review-form", {
     title: `Review ${name} on Loc8r`,
-    pageHeader: { title: `Review ${name}` }
+    pageHeader: { title: `Review ${name}` },
+    // if page is re-rendered with an error, pass that to the page view render engine
+    error: req.query.err
   });
 };
 
-// controller for rendering the "/location/review/new" page view
+// controller GET route on "/location/review/new" to create New Review page view
 const addReview = (req, res) => {
   // use generic getLocationInfo and pass it a callback which calls renderReviewForm
   getLocationInfo(req, res, (req, res, responseData) => renderReviewForm(req, res, responseData));
@@ -216,32 +218,44 @@ const addReview = (req, res) => {
 
 // ========================================================
 
-// controller for rendering the "/location/review/new" page view
+// controller called when a user posts new review to location-review-form.pug view
+// example: http://localhost:3000/location/5cea24ba492efd0e825284c3/review/new
 const doAddReview = (req, res) => {
-  //
+  // get the value at /:locationid/ defined in the page view route
   const locationid = req.params.locationid;
-  //
+  // console.log(req.params);
+  // use that :locationid to construct an api call route
   const path = `/api/locations/${locationid}/reviews`;
-  //
+  // get data from req.body as POSTed by the form to the page view route
+  // console.log(req.body);
   const postdata = {
     author: req.body.name,
     rating: parseInt(req.body.rating, 10),
     reviewText: req.body.review
   };
-  //
+  // console.log(postdata);
+  // build request data: API URL, method, and postdata object
   const requestOptions = {
     url: `${apiOptions.server}${path}`,
     method: "POST",
     json: postdata
   };
-  //
-  console.log(postdata);
-  console.log(requestOptions);
-  // 
-  request(requestOptions, (err, { statusCode }, body) => {
+  // console.log(requestOptions);
+  // make the actual request with (requestOptions, callback to handle data returned)
+  // deconstruct statusCode from RESPONSE, and name from BODY
+  request(requestOptions, (err, { statusCode }, { name }) => {
     if (statusCode === 201) {
+      // if successful, go back to the location's main page view
       res.redirect(`/location/${locationid}`);
+      // but, if the post attempt results in a simple ValidationError,
+    } else if (statusCode === 400 && name && name === "ValidationError") {
+      // send user back to the Create New Review page, WITH the error value in URL,
+      // so we can alert the user to the problem using ?err=val onto the GET route
+      // that calls addReview, which uses renderReviewForm to create the page view
+      res.redirect(`/location/${locationid}/review/new?err=val`);
     } else {
+      // but if something else has gone wrong, console it display HTTP error code on page
+      console.log(body);
       showError(req, res, statusCode);
     }
   });
