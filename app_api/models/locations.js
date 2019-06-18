@@ -46,7 +46,10 @@ const openingTimeSchema = new mongoose.Schema({
 const reviewSchema = new mongoose.Schema({
   // _id: ObjectId(..) automatically generated
   // author's name
-  author: String,
+  author: {
+    type: String,
+    required: true
+  },
   // author's rating of location
   rating: {
     type: Number,
@@ -55,8 +58,11 @@ const reviewSchema = new mongoose.Schema({
     max: 5
   },
   // text of author's review of location
-  reviewText: String,
-  // no manual create date entry, so automatic timestamped
+  reviewText: {
+    type: String,
+    required: true
+  },
+  // new reviews are automatically timestamped
   createdOn: {
     type: Date,
     default: Date.now
