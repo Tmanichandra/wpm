@@ -1,5 +1,3 @@
-// https://mean-loc8r-1.herokuapp.com/
-
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
@@ -7,8 +5,6 @@ const favicon = require("serve-favicon");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
-// db.js does not export functions, so does NOT need a var name assigned
-// connects Express/Node to Mongoose db models in app_api
 require("./app_api/models/db");
 
 // VIEWS router
